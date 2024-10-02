@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import logger from '../scripts/logger/Projects.js';
 
 import { Schema } from "mongoose";
 
@@ -14,6 +15,13 @@ const ProjectSchema = new Schema({
       versionKey: false
    }
 );
+
+ProjectSchema.post("save", (log) => {
+   logger.log({
+      level: 'info',
+      message: log
+   });
+});
 
 const Projects = mongoose.model('Projects', ProjectSchema);
 
