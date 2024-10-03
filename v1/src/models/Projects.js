@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import logger from '../scripts/logger/Projects.js';
 
-import { Schema } from "mongoose";
+const { Schema } = mongoose;
 
 const ProjectSchema = new Schema({
    name: String,
