@@ -1,13 +1,13 @@
-import User from "../models/Projects.js";
+import Projects from "../models/Projects.js";
 
 const insert = (data) => {
-   const project = User(data);
+   const project = Projects(data);
 
    return project.save();
 };
 
 const list = () => {
-   return User.find({});
+   return Projects.find({});
 };
 
 export {

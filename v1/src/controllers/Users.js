@@ -1,6 +1,6 @@
 import httpStatus from 'http-status';
 import { insert, list, loginUser } from '../services/Users.js';
-import { passwordToHash } from '../scripts/utils/helper.js';
+import { generateAccessToken, generateRefreshToken, passwordToHash } from '../scripts/utils/helper.js';
 
 const index = (req, res) => {
    list()
@@ -28,6 +28,17 @@ const login = (req, res) => {
    loginUser(req.body)
       .then((user) => {
          if(!user) return res.status(httpStatus.NOT_FOUND).send({ message : "User not found" });
+         
+         user = {
+            ...user.toObject(),
+            tokens: {
+               access_token: generateAccessToken(user),
+               refresh_token: generateRefreshToken(user)
+            }
+         };
+
+         delete user.password;
+
          res.status(httpStatus.CREATED).send(user);
       })
       .catch((error) => {
