@@ -10,7 +10,7 @@ const index = (req, res) => {
       .catch((error) => {
          res.status(httpStatus.INTERNAL_SERVER_ERROR).send(error);
       })
-}
+};
 
 const store = (req, res) => {
    req.body.password = passwordToHash(req.body.password);
@@ -50,4 +50,4 @@ export {
    index,
    store,
    login
-}
+};

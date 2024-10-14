@@ -6,4 +6,4 @@ const storeValidation = Joi.object({
 
 export {
    storeValidation
-}
+};

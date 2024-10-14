@@ -9,7 +9,7 @@ const index = (req, res) => {
       .catch((error) => {
          res.status(httpStatus.INTERNAL_SERVER_ERROR).send(error);
       })
-}
+};
 
 const store = (req, res) => {
    insert(req.body)
@@ -23,4 +23,4 @@ const store = (req, res) => {
 export {
    index,
    store,
-}
+};

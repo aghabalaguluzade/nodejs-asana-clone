@@ -36,4 +36,4 @@ process.on('SIGINT', () => {
 
 export {
    connectDB
-}
+};

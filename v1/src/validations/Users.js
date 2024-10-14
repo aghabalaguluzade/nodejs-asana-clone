@@ -14,4 +14,4 @@ const loginValidation = Joi.object({
 export {
    storeValidation,
    loginValidation
-}
+};

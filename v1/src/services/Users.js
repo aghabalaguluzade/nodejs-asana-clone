@@ -1,9 +1,9 @@
 import Users from "../models/Users.js";
 
 const insert = (data) => {
-   const project = Users(data);
+   const user = Users(data);
 
-   return project.save();
+   return user.save();
 };
 
 const list = () => {

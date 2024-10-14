@@ -8,7 +8,7 @@ const validate = (schema) => (req, res, next) => {
 
       res.status(httpStatus.BAD_REQUEST).json(errorMessage);
       return;
-   }
+   };
 
    Object.assign(req, value);
    return next();
@@ -16,4 +16,4 @@ const validate = (schema) => (req, res, next) => {
 
 export {
    validate
-}
+};
