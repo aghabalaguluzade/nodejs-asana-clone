@@ -5,10 +5,10 @@ const { Schema } = mongoose;
 
 const ProjectSchema = new Schema({
    name: String,
-   // user_id: {
-   //    type: mongoose.Types.ObjectId,
-   //    ref: 'User'
-   // }
+   user_id: {
+      type: mongoose.Types.ObjectId,
+      ref: 'User'
+   }
 }, 
    { 
       timestamps: true,
