@@ -6,8 +6,9 @@ import toobusy from 'toobusy-js';
 import hpp from 'hpp';
 import hsts from 'hsts';
 import config from './config/index.js';
-import { ProjectRoutes, UserRoutes } from './routes/api/index.js';
 import loaders from './loaders/index.js';
+import events from './scripts/events/index.js';
+import { ProjectRoutes, UserRoutes } from './routes/api/index.js';
 import shouldCompress from './middlewares/compression.js';
 import limiter from './middlewares/rateLimit.js';
 import speedLimiter from './middlewares/speedLimiter.js';
@@ -15,6 +16,7 @@ import rateLimitFlexibleMiddleware from './middlewares/rateLimitFlexible.js';
 
 config();
 loaders();
+events();
 
 const app = express();
 
