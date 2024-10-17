@@ -17,8 +17,13 @@ const modify = (data, id) => {
    return Projects.findByIdAndUpdate(id, data, { new: true });
 };
 
+const remove = (id) => {
+   return Projects.findByIdAndDelete(id);
+};
+
 export {
    list,
    insert,
-   modify
+   modify,
+   remove
 };

@@ -20,9 +20,14 @@ const ressetPasswordValidation = Joi.object({
    email: Joi.string().email().required().min(8)
 });
 
+const changePasswordValidation = Joi.object({
+   password: Joi.string().required().min(8)
+});
+
 export {
    storeValidation,
    loginValidation,
    ressetPasswordValidation,
-   updateValidation
+   updateValidation,
+   changePasswordValidation
 };

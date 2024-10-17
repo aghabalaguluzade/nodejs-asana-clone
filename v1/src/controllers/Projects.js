@@ -1,5 +1,5 @@
 import httpStatus from 'http-status';
-import { insert, list, modify } from '../services/Projects.js';
+import { insert, list, modify, remove } from '../services/Projects.js';
 
 const index = (req, res) => {
    list()
@@ -28,13 +28,27 @@ const update = (req, res) => {
    modify(req.body, req.params?.id)
       .then(updatedProject => {
          res.status(httpStatus.OK).send(updatedProject);
-      }).catch(err => {
+      }).catch(() => {
          res.status(httpStatus.INTERNAL_SERVER_ERROR).send({ message: 'A problem occurred during the update.' });
       });
+};
+
+const destroy = (req, res) => {
+   if (!req.params?.id) return res.status(httpStatus.NOT_FOUND).send({ message: 'ID not found' });
+
+   remove(req.params?.id)
+      .then((deleteProject) => {
+
+         if(!deleteProject) return res.status(httpStatus.NOT_FOUND).send({ message : 'Project not found' });
+
+         res.status(httpStatus.OK).send({ message: 'Project deleted.' });
+      })
+      .catch(() => res.status(httpStatus.INTERNAL_SERVER_ERROR).send({ error: 'A problem occurred during the delete.' }));
 };
 
 export {
    index,
    store,
-   update
+   update,
+   destroy
 };

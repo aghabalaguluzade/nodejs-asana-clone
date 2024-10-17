@@ -18,9 +18,14 @@ const modifyPassword = (where, data) => {
    return Users.findOneAndUpdate(where, data, { new: true });
 };
 
+const remove = (id) => {
+   return Users.findByIdAndDelete(id);
+}
+
 export {
    list,
    insert,
    loginUser,
-   modifyPassword
+   modifyPassword,
+   remove
 };

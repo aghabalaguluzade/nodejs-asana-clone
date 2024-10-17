@@ -1,5 +1,5 @@
 import httpStatus from 'http-status';
-import { insert, list, loginUser, modifyPassword } from '../services/Users.js';
+import { insert, list, loginUser, modifyPassword, remove } from '../services/Users.js';
 import * as projectService from '../services/Projects.js';
 import { generateAccessToken, generateRefreshToken, passwordToHash } from '../scripts/utils/helper.js';
 import { v4 as uuidv4 } from 'uuid';
@@ -83,11 +83,35 @@ const update = (req, res) => {
       .catch(() => res.status(httpStatus.INTERNAL_SERVER_ERROR).send({ error: 'An error occurred during the update process' }));
 };
 
+const changePassword = (req, res) => {
+   // After the UI arrives, rules for password comparisons will be available here
+   req.body.password = passwordToHash(req.body.password);
+
+   modifyPassword({ _id : req.user?.id }, req.body)
+      .then((changePassword) => res.status(httpStatus.OK).send(changePassword))
+      .catch(() => res.status(httpStatus.INTERNAL_SERVER_ERROR).send({ error: 'Invalid password' }));
+};
+
+const destroy = (req, res) => {
+   if (!req.params?.id) return res.status(httpStatus.NOT_FOUND).send({ message: 'ID not found' });
+
+   remove(req.params?.id)
+      .then((deleteUser) => {
+
+         if(!deleteUser) return res.status(httpStatus.NOT_FOUND).send({ message : 'User not found' });
+
+         res.status(httpStatus.OK).send({ message: 'User deleted.' });
+      })
+      .catch(() => res.status(httpStatus.INTERNAL_SERVER_ERROR).send({ error: 'A problem occurred during the delete.' }));
+};
+
 export {
    index,
    store,
    login,
    projectList,
    resetPassword,
-   update
+   update,
+   changePassword,
+   destroy,
 };
