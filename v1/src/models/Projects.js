@@ -4,7 +4,10 @@ import logger from '../scripts/logger/Projects.js';
 const { Schema } = mongoose;
 
 const ProjectSchema = new Schema({
-   name: String,
+   name: {
+      type: String,
+      required: true,
+   },
    user_id: {
       type: mongoose.Types.ObjectId,
       ref: 'User'

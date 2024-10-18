@@ -14,7 +14,7 @@ const loginUser = (user) => {
    return Users.findOne(user);
 };
 
-const modifyPassword = (where, data) => {
+const modify = (where, data) => {
    return Users.findOneAndUpdate(where, data, { new: true });
 };
 
@@ -26,6 +26,6 @@ export {
    list,
    insert,
    loginUser,
-   modifyPassword,
+   modify,
    remove
 };

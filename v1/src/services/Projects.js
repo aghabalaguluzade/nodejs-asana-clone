@@ -3,7 +3,7 @@ import Projects from "../models/Projects.js";
 const list = (where) => {
    return Projects.find(where || {}).populate({
       path: 'user_id',
-      select: 'full_name email'
+      select: 'full_name email profile_image'
    });
 };
 

@@ -7,6 +7,8 @@ import hpp from 'hpp';
 import config from './config/index.js';
 import loaders from './loaders/index.js';
 import events from './scripts/events/index.js';
+import fileupload from 'express-fileupload';
+import path from 'path';
 import { ProjectRoutes, UserRoutes } from './routes/api/index.js';
 import shouldCompress from './middlewares/compression.js';
 import limiter from './middlewares/rateLimit.js';
@@ -18,6 +20,7 @@ loaders();
 events();
 
 const app = express();
+const __dirname = path.resolve();
 
 app.use(express.json());
 app.use(cors());
@@ -68,6 +71,8 @@ app.use(function (req, res, next) {
       next();
    }
 });
+app.use(fileupload());
+app.use("/uploads", express.static(path.join(__dirname, 'v1/src/uploads')));
 
 app.listen(process.env.APP_PORT, () => {
    console.log('listening on port ' + process.env.APP_PORT);
