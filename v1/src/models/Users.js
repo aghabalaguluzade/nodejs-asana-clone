@@ -4,7 +4,10 @@ import logger from '../scripts/logger/Users.js';
 const { Schema } = mongoose;
 
 const UserSchema = new Schema({
-   full_name: String,
+   full_name: {
+      type: String,
+      required: true,
+   },
    email: {
       type: String,
       required: true,
@@ -15,7 +18,9 @@ const UserSchema = new Schema({
       required: true,
       min: 8
    },
-   profile_image: String,
+   profile_image: {
+      type: String,
+   }
 },
    {
       timestamps: true,
@@ -26,7 +31,14 @@ const UserSchema = new Schema({
 UserSchema.post("save", (log) => {
    logger.log({
       level: 'info',
-      message: log
+      message: `User document created: ${log}`
+   });
+});
+
+UserSchema.post('findOneAndUpdate', (log) => {
+   logger.log({
+      level: 'info',
+      message: `User document updated: ${log}`
    });
 });
 

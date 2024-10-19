@@ -22,7 +22,14 @@ const ProjectSchema = new Schema({
 ProjectSchema.post("save", (log) => {
    logger.log({
       level: 'info',
-      message: log
+      message: `Project document created: ${log}`
+   });
+});
+
+ProjectSchema.post("findOneAndUpdate", (log) => {
+   logger.log({
+      level: 'info',
+      message: `Project document updated: ${log}`
    });
 });
 

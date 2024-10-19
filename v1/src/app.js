@@ -9,7 +9,7 @@ import loaders from './loaders/index.js';
 import events from './scripts/events/index.js';
 import fileupload from 'express-fileupload';
 import path from 'path';
-import { ProjectRoutes, UserRoutes } from './routes/api/index.js';
+import { ProjectRoutes, UserRoutes, SectionRoutes } from './routes/api/index.js';
 import shouldCompress from './middlewares/compression.js';
 import limiter from './middlewares/rateLimit.js';
 import speedLimiter from './middlewares/speedLimiter.js';
@@ -78,4 +78,5 @@ app.listen(process.env.APP_PORT, () => {
    console.log('listening on port ' + process.env.APP_PORT);
    app.use("/projects", ProjectRoutes);
    app.use("/users", UserRoutes);
+   app.use("/sections", SectionRoutes);
 });
