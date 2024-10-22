@@ -1,0 +1,11 @@
+# Tests
+test
+coverage
+
+# Build tools
+.travis.yml
+.jenkins.yml
+
+# Environment
+.env
+.config

@@ -1,11 +1,10 @@
 import httpStatus from 'http-status';
-import { insert, list, modify, remove, findOne } from '../services/Tasks.js';
+import TaskService from '../services/TaskService.js';
 
 const index = (req, res) => {
    if (!req?.params?.projectId) return res.status(httpStatus.NOT_FOUND).send({ error: 'Project not found' });
-   list({ project_id: req.params.projectId })
+   TaskService.list({ project_id: req.params.projectId })
       .then((response) => {
-         console.log(response);
          res.status(httpStatus.OK).send(response);
       })
       .catch((error) => {
@@ -17,7 +16,7 @@ const index = (req, res) => {
 const store = (req, res) => {
    req.body.user_id = req.user;
 
-   insert(req.body)
+   TaskService.create(req.body)
       .then((response) => {
          res.status(httpStatus.CREATED).send(response);
       }).catch((error) => {
@@ -28,7 +27,7 @@ const store = (req, res) => {
 const update = (req, res) => {
    if (!req.params?.id) return res.status(httpStatus.NOT_FOUND).send({ message: 'ID not found' });
 
-   modify(req.body, req.params?.id)
+   TaskService.update(req.body, req.params?.id)
       .then(updatedSection => {
          res.status(httpStatus.OK).send(updatedSection);
       }).catch(() => {
@@ -39,7 +38,7 @@ const update = (req, res) => {
 const destroy = (req, res) => {
    if (!req.params?.id) return res.status(httpStatus.NOT_FOUND).send({ message: 'ID not found' });
 
-   remove(req.params?.id)
+   TaskService.delete(req.params?.id)
       .then((deleteSection) => {
 
          if (!deleteSection) return res.status(httpStatus.NOT_FOUND).send({ message: 'Section not found' });
@@ -50,7 +49,7 @@ const destroy = (req, res) => {
 };
 
 const sendComment = (req, res) => {
-   findOne({ _id: req.params.id })
+   TaskService.findOne({ _id: req.params.id })
       .then((mainTask) => {
          if (!mainTask) return res.status(httpStatus.NOT_FOUND).send({ message: 'Not found' });
          const comment = {
@@ -72,7 +71,7 @@ const sendComment = (req, res) => {
 const deleteComment = (req, res) => {
    if (!req.params?.id) return res.status(httpStatus.NOT_FOUND).send({ message: 'ID not found' });
 
-   findOne({ _id: req.params.id })
+   TaskService.findOne({ _id: req.params.id })
       .then((mainTask) => {
          if (!mainTask) return res.status(httpStatus.NOT_FOUND).send({ message: 'Not found' });
          const commentId = req.params.commentId;
@@ -93,13 +92,13 @@ const deleteComment = (req, res) => {
 const addSubTask = (req, res) => {
    if (!req.params?.id) return res.status(httpStatus.NOT_FOUND).send({ message: 'ID not found' });
 
-   findOne({ _id: req.params.id })
+   TaskService.findOne({ _id: req.params.id })
       .then((mainTask) => {
          if (!mainTask) return res.status(httpStatus.NOT_FOUND).send({ message: 'Not found' });
 
          req.body.user_id = req.user;
 
-         insert({ ...req.body, user_id: req.user })
+         TaskService.create({ ...req.body, user_id: req.user })
             .then((subTask) => {
                mainTask.sub_tasks.push(subTask);
 
@@ -117,7 +116,7 @@ const addSubTask = (req, res) => {
 const fetchTask = (req, res) => {
    if (!req.params?.id) return res.status(httpStatus.NOT_FOUND).send({ message: 'ID not found' });
 
-   findOne({ _id: req.params.id }, true)
+   TaskService.findOne({ _id: req.params.id }, true)
       .then((task) => {
          if (!task) return res.status(httpStatus.NOT_FOUND).send({ message: 'Not found' });
          res.status(httpStatus.OK).send(task);

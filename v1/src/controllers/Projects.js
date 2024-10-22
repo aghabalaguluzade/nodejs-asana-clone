@@ -1,8 +1,8 @@
 import httpStatus from 'http-status';
-import { insert, list, modify, remove } from '../services/Projects.js';
+import ProjectService from '../services/ProjectService.js';
 
 const index = (req, res) => {
-   list()
+   ProjectService.list()
       .then((response) => {
          res.status(httpStatus.OK).send(response);
       })
@@ -14,7 +14,7 @@ const index = (req, res) => {
 const store = (req, res) => {
    req.body.user_id = req.user;
 
-   insert(req.body)
+   ProjectService.create(req.body)
       .then((response) => {
          res.status(httpStatus.CREATED).send(response);
       }).catch((error) => {
@@ -25,7 +25,7 @@ const store = (req, res) => {
 const update = (req, res) => {
    if (!req.params?.id) return res.status(httpStatus.NOT_FOUND).send({ message: 'ID not found' });
 
-   modify(req.body, req.params?.id)
+   ProjectService.update(req.body, req.params?.id)
       .then(updatedProject => {
          res.status(httpStatus.OK).send(updatedProject);
       }).catch(() => {
@@ -36,7 +36,7 @@ const update = (req, res) => {
 const destroy = (req, res) => {
    if (!req.params?.id) return res.status(httpStatus.NOT_FOUND).send({ message: 'ID not found' });
 
-   remove(req.params?.id)
+   ProjectService.delete(req.params?.id)
       .then((deleteProject) => {
 
          if(!deleteProject) return res.status(httpStatus.NOT_FOUND).send({ message : 'Project not found' });
