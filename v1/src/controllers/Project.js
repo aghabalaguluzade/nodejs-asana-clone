@@ -1,5 +1,6 @@
 import httpStatus from 'http-status';
 import ProjectService from '../services/ProjectService.js';
+import ApiError from '../errors/ApiError.js';
 
 class Project {
 
@@ -24,15 +25,15 @@ class Project {
          });
    }
 
-   update (req, res) {
+   update (req, res, next) {
       if (!req.params?.id) return res.status(httpStatus.NOT_FOUND).send({ message: 'ID not found' });
    
       ProjectService.update(req.body, req.params?.id)
          .then(updatedProject => {
+            if(!updatedProject) return next(new ApiError('No such record exists', httpStatus.NOT_FOUND));
             res.status(httpStatus.OK).send(updatedProject);
-         }).catch(() => {
-            res.status(httpStatus.INTERNAL_SERVER_ERROR).send({ message: 'A problem occurred during the update.' });
-         });
+         })
+         .catch((e) => next(new ApiError(e?.message)));
    }
 
    destroy(req, res) {

@@ -9,6 +9,7 @@ import loaders from './loaders/index.js';
 import events from './scripts/events/index.js';
 import fileupload from 'express-fileupload';
 import path from 'path';
+import errorHandler from './middlewares/errorHandler.js';
 import { ProjectRoutes, UserRoutes, SectionRoutes, TaskRoutes } from './routes/api/index.js';
 import shouldCompress from './middlewares/compression.js';
 import limiter from './middlewares/rateLimit.js';
@@ -80,4 +81,14 @@ app.listen(process.env.APP_PORT, () => {
    app.use("/users", UserRoutes);
    app.use("/sections", SectionRoutes);
    app.use("/tasks", TaskRoutes);
+
+   app.use((req, res, next) => {
+      const error = new Error('The page you are looking for does not exist.');
+      error.status = 404;
+      next(error);
+   });
+
+   // Error handling
+   app.use(errorHandler);
+
 });
