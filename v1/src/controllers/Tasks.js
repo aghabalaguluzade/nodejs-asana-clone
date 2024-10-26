@@ -1,5 +1,6 @@
 import httpStatus from 'http-status';
 import TaskService from '../services/TaskService.js';
+import ApiError from '../errors/ApiError.js';
 
 const index = (req, res) => {
    if (!req?.params?.projectId) return res.status(httpStatus.NOT_FOUND).send({ error: 'Project not found' });
@@ -7,10 +8,7 @@ const index = (req, res) => {
       .then((response) => {
          res.status(httpStatus.OK).send(response);
       })
-      .catch((error) => {
-         console.log(error);
-         res.status(httpStatus.INTERNAL_SERVER_ERROR).send(error);
-      })
+      .catch((e) => next(new ApiError(e?.message)));
 };
 
 const store = (req, res) => {
@@ -19,33 +17,31 @@ const store = (req, res) => {
    TaskService.create(req.body)
       .then((response) => {
          res.status(httpStatus.CREATED).send(response);
-      }).catch((error) => {
-         res.status(httpStatus.INTERNAL_SERVER_ERROR).send(error);
-      });
+      })
+      .catch((e) => next(new ApiError(e?.message)));
 };
 
 const update = (req, res) => {
    if (!req.params?.id) return res.status(httpStatus.NOT_FOUND).send({ message: 'ID not found' });
 
    TaskService.update(req.body, req.params?.id)
-      .then(updatedSection => {
-         res.status(httpStatus.OK).send(updatedSection);
-      }).catch(() => {
-         res.status(httpStatus.INTERNAL_SERVER_ERROR).send({ message: 'A problem occurred during the update.' });
-      });
+      .then(updatedTasks => {
+         if (!updatedTasks) return next(new ApiError('No such record exists', httpStatus.NOT_FOUND));
+         res.status(httpStatus.OK).send(updatedTasks);
+      })
+      .catch((e) => next(new ApiError(e?.message)));
 };
 
 const destroy = (req, res) => {
    if (!req.params?.id) return res.status(httpStatus.NOT_FOUND).send({ message: 'ID not found' });
 
    TaskService.delete(req.params?.id)
-      .then((deleteSection) => {
-
-         if (!deleteSection) return res.status(httpStatus.NOT_FOUND).send({ message: 'Section not found' });
+      .then((deleteTask) => {
+         if (!deleteTask) return next(new ApiError('No such record exists', httpStatus.NOT_FOUND));
 
          res.status(httpStatus.OK).send({ message: 'Project deleted.' });
       })
-      .catch(() => res.status(httpStatus.INTERNAL_SERVER_ERROR).send({ error: 'A problem occurred during the delete.' }));
+      .catch((e) => next(new ApiError(e?.message)));
 };
 
 const sendComment = (req, res) => {
@@ -63,9 +59,7 @@ const sendComment = (req, res) => {
             .then((sendComment) => res.status(httpStatus.OK).send(sendComment))
             .catch(() => res.status(httpStatus.INTERNAL_SERVER_ERROR).send({ message: 'Internal Server Error' }));
       })
-      .catch(() => {
-         res.status(httpStatus.INTERNAL_SERVER_ERROR).send({ error: 'A problem occurred during the sending message' });
-      });
+      .catch((e) => next(new ApiError(e?.message)));
 };
 
 const deleteComment = (req, res) => {
@@ -84,9 +78,7 @@ const deleteComment = (req, res) => {
             .then(() => res.status(httpStatus.OK).send({ message: 'Comment deleted successfully' }))
             .catch(() => res.status(httpStatus.INTERNAL_SERVER_ERROR).send({ message: 'Internal Server Error' }));
       })
-      .catch(() => {
-         res.status(httpStatus.INTERNAL_SERVER_ERROR).send({ error: 'A problem occurred during the operation' });
-      });
+      .catch((e) => next(new ApiError(e?.message)));
 };
 
 const addSubTask = (req, res) => {
@@ -110,7 +102,7 @@ const addSubTask = (req, res) => {
                res.status(httpStatus.INTERNAL_SERVER_ERROR).send(error);
             });
       })
-      .catch(() => res.status(httpStatus.INTERNAL_SERVER_ERROR).send({ error: 'A problem occurred during the operation' }));
+      .catch((e) => next(new ApiError(e?.message)));
 };
 
 const fetchTask = (req, res) => {
@@ -121,7 +113,7 @@ const fetchTask = (req, res) => {
          if (!task) return res.status(httpStatus.NOT_FOUND).send({ message: 'Not found' });
          res.status(httpStatus.OK).send(task);
       })
-      .catch((error) => res.status(httpStatus.INTERNAL_SERVER_ERROR).send(error));
+      .catch((e) => next(new ApiError(e?.message)));
 };
 
 export {

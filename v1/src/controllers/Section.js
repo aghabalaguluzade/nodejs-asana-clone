@@ -1,53 +1,50 @@
 import httpStatus from 'http-status';
 import SectionService from '../services/SectionService.js';
+import ApiError from '../errors/ApiError.js';
 
 class Section {
    index(req, res) {
-      if(!req?.params?.projectId) return res.status(httpStatus.NOT_FOUND).send({ error: 'Project not found' });
-      SectionService.list({ project_id: req.params.projectId})
+      if (!req?.params?.projectId) return res.status(httpStatus.NOT_FOUND).send({ error: 'Project not found' });
+      SectionService.list({ project_id: req.params.projectId })
          .then((response) => {
-            console.log(response);
             res.status(httpStatus.OK).send(response);
          })
-         .catch((error) => {
-            console.log(error);
-            res.status(httpStatus.INTERNAL_SERVER_ERROR).send(error);
-         })
+         .catch((e) => next(new ApiError(e?.message)));
    }
 
    store(req, res) {
       req.body.user_id = req.user;
-   
+
       SectionService.create(req.body)
          .then((response) => {
             res.status(httpStatus.CREATED).send(response);
-         }).catch((error) => {
-            res.status(httpStatus.INTERNAL_SERVER_ERROR).send(error);
-         });
+         })
+         .catch((e) => next(new ApiError(e?.message)));
    }
 
    update(req, res) {
       if (!req.params?.id) return res.status(httpStatus.NOT_FOUND).send({ message: 'ID not found' });
-   
+
       SectionService.update(req.body, req.params?.id)
          .then(updatedSection => {
+            if (!updatedSection) return next(new ApiError('No such record exists', httpStatus.NOT_FOUND));
+
             res.status(httpStatus.OK).send(updatedSection);
-         }).catch(() => {
-            res.status(httpStatus.INTERNAL_SERVER_ERROR).send({ message: 'A problem occurred during the update.' });
-         });
+         })
+         .catch((e) => next(new ApiError(e?.message)));
    }
-   
+
    destroy(req, res) {
       if (!req.params?.id) return res.status(httpStatus.NOT_FOUND).send({ message: 'ID not found' });
-   
+
       SectionService.delete(req.params?.id)
          .then((deleteSection) => {
-   
-            if(!deleteSection) return res.status(httpStatus.NOT_FOUND).send({ message : 'Section not found' });
-   
+
+            if (!deleteSection) return next(new ApiError('No such record exists', httpStatus.NOT_FOUND));
+
             res.status(httpStatus.OK).send({ message: 'Project deleted.' });
          })
-         .catch(() => res.status(httpStatus.INTERNAL_SERVER_ERROR).send({ error: 'A problem occurred during the delete.' }));
+         .catch((e) => next(new ApiError(e?.message)));
    }
 }
 
